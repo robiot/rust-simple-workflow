@@ -1,10 +1,10 @@
-name: Rust
-
+# Everytime a new tag is created that starts with v, It will run this action
 on:
   push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
+    tags:
+      - 'v*'
+
+name: Create Release
 
 env:
   CARGO_TERM_COLOR: always
@@ -16,7 +16,23 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - name: Build
-      run: cargo build --verbose
+
+    # First check that tests succeed 
     - name: Run tests
       run: cargo test --verbose
+
+    # Build it
+    - name: Build
+      run: cargo build --verbose --release
+
+    # Create a github release with automatic generated release notes
+    - name: Create Release
+      uses: softprops/action-gh-release@v0.1.14
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        generate_release_notes: true
+        draft: false
+        prerelease: false
+        files: |
+          target/release/rust-simple-workflow
