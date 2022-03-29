@@ -3,5 +3,5 @@
 version = 3
 
 [[package]]
-name = "epic-workflow"
+name = "rust-simple-workflow"
 version = "0.1.0"
